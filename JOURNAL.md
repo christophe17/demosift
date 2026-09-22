@@ -27,3 +27,15 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   (`latency_seconds` in the response); an empty payload returns an explicit error.
 - Runtime `agent` mode exercised in the tests with the agent stubbed. No Bedrock call made
   yet: no AWS account chosen for the project.
+
+## 2026-09-22 — First push and first CI run
+
+- Public repository created under the author's account (D9): <https://github.com/christophe17/demosift>.
+- First CI run on `main`: `lint, types, tests`, `runtime image builds (linux/arm64)`, `dependency
+  vulnerabilities` and `secret detection` green; `terraform fmt, validate, tflint` red. Cause: CI
+  pinned Terraform 1.15.0, whose `validate` checks the required arguments of the `backend` block
+  even with `init -backend=false`; our `backend "s3" {}` is partial by design (`backend.hcl`). The
+  check was removed in 1.15.1 (hashicorp/terraform #38466). Reproduced offline with the 1.15.0
+  binary; 1.15.8 passes. Fix: CI pinned to 1.15.8 and `required_version` raised to `>= 1.15.1`
+  in the root and the two modules, so 1.15.0 is refused with an explicit message instead of a
+  confusing validate error.

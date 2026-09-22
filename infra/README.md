@@ -39,8 +39,10 @@ the runtime gets its own layer (`envs/<env>/<layer>`) and its own state.
   provider's `default_tags` and passed again as the `tags` variable of modules (validated there).
 - A layer reads another layer's outputs through `terraform_remote_state`, added the day an output is consumed
   (never an unused data source).
-- Providers: `hashicorp/aws ~> 6.65` (6.65.0 resolved on 2026-09-21). Terraform `>= 1.15.0, < 2.0.0`
-  (1.15.8 locally). `hashicorp/awscc` is not needed: see the coverage table below.
+- Providers: `hashicorp/aws ~> 6.65` (6.65.0 resolved on 2026-09-21). Terraform `>= 1.15.1, < 2.0.0`
+  (1.15.8 locally and in CI). 1.15.0 is excluded on purpose: its `validate` checked the required
+  arguments of the `backend` block, which fails on a partial backend filled by `-backend-config`; 1.15.1
+  removed that check (JOURNAL.md, 2026-09-22). `hashicorp/awscc` is not needed: see the coverage table below.
 - Every `.tf` file starts with a one-line comment saying what it does. Everything is in English.
 - Provider lock files: the repository `.gitignore` currently ignores `.terraform.lock.hcl`. For roots, a committed
   lock file pins the exact provider build and its checksums; un-ignore `infra/envs/**/.terraform.lock.hcl`
