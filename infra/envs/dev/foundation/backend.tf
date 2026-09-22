@@ -1,0 +1,4 @@
+# Partial S3 backend: bucket, key and encryption come from backend.hcl (terraform init -backend-config=backend.hcl).
+terraform {
+  backend "s3" {}
+}

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
+.coverage
+htmlcov/
+# Hugging Face cache used by local runs
+.hf-cache/
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+backend.hcl
+terraform.tfvars
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

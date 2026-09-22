@@ -1,0 +1,92 @@
+[project]
+name = "demosift"
+version = "0.1.0"
+description = "A multi-agent auditor of LeRobot robot-demonstration datasets, on Amazon Bedrock AgentCore"
+readme = "README.md"
+authors = [
+    { name = "Christophe", email = "dufour.chri@gmail.com" }
+]
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+keywords = ["lerobot", "robotics", "dataset", "audit", "agents", "bedrock", "agentcore"]
+dependencies = [
+    "bedrock-agentcore>=0.1",
+    "click>=8.2",
+    "huggingface-hub>=0.35",
+    "pandas>=2.3",
+    "pyarrow>=21",
+    "pydantic>=2.11",
+    "strands-agents>=1.0",
+]
+
+[project.scripts]
+demosift = "demosift.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.11.13,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17",
+    "pandas-stubs>=3.0.5.260914",
+    "pytest>=8.4",
+    "pytest-cov>=6",
+    "ruff>=0.13",
+]
+
+# ---------------------------------------------------------------------------
+# Quality
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "E", "W", "F", "I", "N", "UP", "B", "A", "C4", "SIM", "RET", "ARG", "PTH",
+  "ERA", "PL", "RUF", "S", "T20", "ANN", "D", "TID", "ISC", "PIE", "PERF", "LOG", "G",
+]
+ignore = [
+  "D105",   # docstrings in magic methods
+  "D107",   # docstrings in __init__
+  "ISC001", # incompatible with the formatter
+  "PLR0913", # tools and CLIs legitimately take several keyword arguments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "D", "PLR2004", "ANN", "ARG", "E501", "RUF001"]
+"src/demosift/cli.py" = ["T20", "PLC0415"]  # lazy imports keep `inspect` free of the agent stack
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["demosift"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+pretty = true
+show_error_codes = true
+files = ["src", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["strands", "strands.*", "bedrock_agentcore", "bedrock_agentcore.*", "huggingface_hub", "huggingface_hub.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q --strict-markers"
+filterwarnings = ["error", "ignore::DeprecationWarning", "ignore::pytest.PytestUnraisableExceptionWarning"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
