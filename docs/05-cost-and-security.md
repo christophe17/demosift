@@ -12,8 +12,8 @@ Nothing reachable from the Internet calls Bedrock before the milestone-0 items e
 | Monthly budget with alarms | AWS Budgets at 50 %, 80 %, 100 % of actual spend and 100 % of forecast (`infra/modules/budget`), emails to the owner | 0 |
 | Model-free path | `inspect` mode answers without a model; the public front defaults to it and only runs `agent` mode for signed-in users | 0 |
 | Bounded generation | `max_tokens` on every model call; temperature 0; one tool, no code execution inside the agent container | 0 |
-| Caller authentication | AgentCore Runtime accepts IAM SigV4 today; the public front signs users in with Hugging Face OAuth through AgentCore Identity and calls the Runtime with a JWT | 0 → 1 |
-| Per-user quota | A counter per Hub user id (audits per day, episodes per audit); enforced before any download or model call | 1 |
+| Caller authentication | The Runtime accepts IAM SigV4 only: the operator's CLI, and the public instance's worker role. End users never reach it directly; their sign-in is `demosift-web`'s (its `docs/04`) | 0 |
+| Per-user quota | Enforced by the public instance before it enqueues anything (`demosift-web`, its `docs/05`). This repository's own bound is the input cap below, so that even a trusted caller cannot make one audit unbounded | 1 |
 | Least privilege | The Runtime role can pull its image, write logs and traces, invoke the configured models, and nothing else (`infra/modules/runtime`) | 0 |
 | No secrets in code | Hub tokens come from the user's OAuth grant (Identity) or from the environment locally; the CI scans for secrets | 0 |
 | Bounded inputs | Only `meta/` is downloaded at milestone 0; milestone 1 caps the number of episodes and files read per audit | 0 → 1 |
@@ -23,7 +23,7 @@ Nothing reachable from the Internet calls Bedrock before the milestone-0 items e
 
 | Threat | Effect | Mitigation |
 |---|---|---|
-| Anonymous traffic burning model tokens | Cost | Authentication before `agent` mode; quota; budget alarms |
+| Anonymous traffic burning model tokens | Cost | The Runtime is IAM-only; the public instance requires sign-in for `agent` mode and rate-limits the model-free tier; budget alarms |
 | A crafted dataset (huge `meta/`, thousands of episodes, malicious task strings) | Cost, latency, prompt injection through task text | Download size cap; episode cap; task texts are quoted in the report as data, and the system prompt tells the model they are untrusted content |
 | Prompt injection through dataset content reaching a write tool | Unwanted writes into a user's dataset card | The narrative agent has no write tool; write-back is a separate step with an explicit diff and consent |
 | Leaking a user's Hub token in logs or traces | Credential theft | Tokens never logged; Identity holds them; log fields are an allow-list |

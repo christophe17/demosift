@@ -39,3 +39,17 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   binary; 1.15.8 passes. Fix: CI pinned to 1.15.8 and `required_version` raised to `>= 1.15.1`
   in the root and the two modules, so 1.15.0 is refused with an explicit message instead of a
   confusing validate error.
+
+## 2026-09-23 — The public instance becomes its own repository
+
+- Decided D12 and D13: the web service is a separate repository, `demosift-web`, created and
+  specified the same day at `~/Sites/demosift-web`; the product name stays `demosift` on both
+  sides; `demosift.io` is canonical. This repository keeps the library, the CLI, the agent,
+  the Runtime container and the Terraform that deploys that Runtime.
+- Consequences propagated: the Runtime is IAM-only and never sees an end-user token; sign-in,
+  quota, history and the anonymous tier are the public instance's; Identity here means the
+  outbound grant vault, Memory means conversational context, not records.
+- `docs/01` gained Policy in the AgentCore table, the explicit exclusion of Browser, and the
+  open question on Code Interpreter versus a Lambda for the fixed numeric audit.
+- `STATE.md` reordered into numbered steps with the two decisions that block them.
+- No code changed; nothing deployed.
