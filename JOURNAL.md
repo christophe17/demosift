@@ -69,3 +69,7 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
 - D16: the fixed audits are Lambdas; Code Interpreter only for improvised code.
 - `docs/01` gained §4 "Execution units" and §5 "The container contract"; `STATE.md` shrank to
   the five steps that are this repository's.
+- D17, later the same day: `aws-opentelemetry-distro` added, the container runs under
+  `opentelemetry-instrument` with `/ping` excluded, a `release` workflow publishes the image
+  to GHCR on `v*` tags. Verified locally: the instrumented image still serves `/ping` and an
+  `inspect` invocation: 1.47 s with the metadata download, `/ping` healthy, zero error-like log lines with the exporter disabled; `/ping` healthy with it enabled and no collector present.

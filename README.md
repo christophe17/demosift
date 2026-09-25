@@ -123,8 +123,15 @@ curl -s -X POST localhost:8080/invocations -H 'content-type: application/json' \
   -d '{"dataset_id": "lerobot/svla_so101_pickplace", "mode": "inspect"}'
 ```
 
+Every version tag publishes the same image to GHCR, so there is nothing to build to run it:
+
+```bash
+docker run --rm -p 8080:8080 -e OTEL_SDK_DISABLED=true ghcr.io/christophe17/demosift:v0.1.0
+```
+
 This repository deploys nothing: no Terraform, no cloud resource. The public instance at
-`demosift.io` runs this image on AgentCore Runtime from a separate deployment repository.
+`demosift.io` copies this image by digest and runs it on AgentCore Runtime from a separate
+deployment repository.
 
 ## Contributing
 

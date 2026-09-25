@@ -119,6 +119,8 @@ running it locally (`JOURNAL.md`, 2026-09-21).
 | Environment | `DEMOSIFT_MODEL_ID` (default `eu.anthropic.claude-sonnet-5`), `DEMOSIFT_REGION` (default `eu-central-1`), `DEMOSIFT_LOG_LEVEL`, `DEMOSIFT_HF_CACHE_DIR` (writable), `HF_TOKEN` optional for private datasets |
 | Needs at runtime | Network egress to `huggingface.co`; in `agent` mode, `bedrock:InvokeModel` and `bedrock:InvokeModelWithResponseStream` on the configured model or inference profile; nothing else. `inspect` mode calls no model and needs no AWS permission |
 | Logs | Structured lines on stdout; never a token, never a user's data |
+| Traces | OpenTelemetry auto-instrumentation: the server runs under `opentelemetry-instrument` from `aws-opentelemetry-distro`, `/ping` excluded. The deployment supplies the exporter configuration, as AgentCore Runtime does; without one, set `OTEL_SDK_DISABLED=true` (what `make docker-run` does) |
+| Published image | `ghcr.io/christophe17/demosift:<version>` and `:sha-<12>`, built by the `release` workflow on a `v*` tag, `linux/arm64`, plain manifest (no attestation index). A deployment copies it by digest into its own registry and never rebuilds it (D17) |
 
 Anything the image needs that is not in this table is a bug in this table.
 

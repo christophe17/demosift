@@ -31,7 +31,12 @@ ENV PATH="/app/.venv/bin:$PATH" \
     DEMOSIFT_HF_CACHE_DIR=/home/demosift/hf-cache \
     DEMOSIFT_REGION=eu-central-1 \
     DEMOSIFT_MODEL_ID=eu.anthropic.claude-sonnet-5 \
-    DEMOSIFT_LOG_LEVEL=INFO
+    DEMOSIFT_LOG_LEVEL=INFO \
+    OTEL_PYTHON_DISTRO=aws_distro \
+    OTEL_PYTHON_CONFIGURATOR=aws_configurator \
+    OTEL_PYTHON_EXCLUDED_URLS="/ping"
 
 EXPOSE 8080
-CMD ["python", "-m", "demosift.runtime"]
+# opentelemetry-instrument wires the ADOT auto-instrumentation (traces of every tool and model call); AgentCore
+# Runtime supplies the exporter configuration. Locally, set OTEL_SDK_DISABLED=true to run without an exporter.
+CMD ["opentelemetry-instrument", "python", "-m", "demosift.runtime"]

@@ -14,6 +14,7 @@
 - Infrastructure moved out 2026-09-25 (D15): the Terraform that deployed the Runtime lives in
   `demosift-web`. This repository ships the image and its contract (`docs/01` §5).
 - Code Interpreter question closed 2026-09-25 (D16): fixed audits are Lambdas.
+- Image instrumented with OpenTelemetry and a `release` workflow to GHCR added 2026-09-25 (D17).
 
 ## Next steps, in order
 
@@ -22,9 +23,11 @@ Work resumes here. Nothing needs a decision before step 5.
 1. **Container contract documented** — done 2026-09-25 (`docs/01` §5), with the execution
    units (`docs/01` §4). Keep the table true: anything the image needs that is not in it is a
    bug in the table.
-2. **Wait for the public instance's `runtime` layer** (`~/Sites/demosift-web/STATE.md`,
-   step 3). It builds this image from a checkout, pushes it and runs it on AgentCore Runtime.
-   Nothing to do here except `make docker-build` when asked.
+2. **Ship `v0.1.0`** (D17): the image carries OpenTelemetry and the `release` workflow
+   publishes it to GHCR on a `v*` tag. Remaining: tag `v0.1.0`, push the tag, check the
+   workflow, then make the GHCR package public once in the package settings. The public
+   instance (`~/Sites/demosift-web/STATE.md`, step 3) then copies that image by digest and runs
+   it; nothing else to do here until it does.
 3. **First invocation through that Runtime**, `inspect` mode then `agent` mode. Record
    latency, tokens and cost per inspection in `JOURNAL.md` and update the table in
    `README.md`; these are the first numbers that do not come from a laptop.

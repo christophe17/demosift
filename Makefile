@@ -37,4 +37,4 @@ docker-build: ## Build the runtime image for linux/arm64 (what AgentCore Runtime
 	docker build --platform linux/arm64 -f services/runtime/Dockerfile -t $(IMAGE) .
 
 docker-run: ## Run the runtime image locally on :8080
-	docker run --rm -p 8080:8080 -e DEMOSIFT_LOG_LEVEL=INFO $(IMAGE)
+	docker run --rm -p 8080:8080 -e DEMOSIFT_LOG_LEVEL=INFO -e OTEL_SDK_DISABLED=true $(IMAGE)

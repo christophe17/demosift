@@ -10,6 +10,7 @@ requires-python = ">=3.12,<3.13"
 license = "Apache-2.0"
 keywords = ["lerobot", "robotics", "dataset", "audit", "agents", "bedrock", "agentcore"]
 dependencies = [
+    "aws-opentelemetry-distro>=0.20",
     "bedrock-agentcore>=0.1",
     "click>=8.2",
     "huggingface-hub>=0.35",
