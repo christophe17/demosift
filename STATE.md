@@ -23,11 +23,11 @@ Work resumes here. Nothing needs a decision before step 5.
 1. **Container contract documented** — done 2026-09-25 (`docs/01` §5), with the execution
    units (`docs/01` §4). Keep the table true: anything the image needs that is not in it is a
    bug in the table.
-2. **Ship `v0.1.0`** (D17): the image carries OpenTelemetry and the `release` workflow
-   publishes it to GHCR on a `v*` tag. Remaining: tag `v0.1.0`, push the tag, check the
-   workflow, then make the GHCR package public once in the package settings. The public
-   instance (`~/Sites/demosift-web/STATE.md`, step 3) then copies that image by digest and runs
-   it; nothing else to do here until it does.
+2. **`v0.1.0` shipped** (D17, 2026-09-25): the image is on GHCR, built once by the `release`
+   workflow. Remaining here: make the GHCR package public once in its settings (or give the
+   deployment a token with `read:packages`). The public instance
+   (`~/Sites/demosift-web/STATE.md`) copies that image by digest and runs it; nothing else to
+   do here until it does.
 3. **First invocation through that Runtime**, `inspect` mode then `agent` mode. Record
    latency, tokens and cost per inspection in `JOURNAL.md` and update the table in
    `README.md`; these are the first numbers that do not come from a laptop.

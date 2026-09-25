@@ -73,3 +73,11 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   `opentelemetry-instrument` with `/ping` excluded, a `release` workflow publishes the image
   to GHCR on `v*` tags. Verified locally: the instrumented image still serves `/ping` and an
   `inspect` invocation: 1.47 s with the metadata download, `/ping` healthy, zero error-like log lines with the exporter disabled; `/ping` healthy with it enabled and no collector present.
+
+## 2026-09-25 — v0.1.0 released
+
+- Tag `v0.1.0` pushed on commit `abdc090`; the `release` workflow built the `linux/arm64` image
+  under QEMU and published `ghcr.io/christophe17/demosift:v0.1.0` and `:sha-abdc090b8c14`
+  in 121s (digest `sha256:01733a3eb6be93d561aec80b7eba05e8c8d6a3bc0463925ea78cfe606f11c3c6`). `ci` green on the same commit.
+- Package visibility at publication: {"message":"You need at least read:packages scope to get a package.","documentation_url":"https://docs.github.com/rest/packages/packages#get-a-package-for-a-user","status":"403"}unknown (token lacks read:packages). Making it public is the one manual step (D17);
+  until then the deployment's promotion needs a token with `read:packages`.
