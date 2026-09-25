@@ -1,7 +1,0 @@
-# Copy to terraform.tfvars (gitignored: account ID and e-mail addresses) and fill in the values.
-account_id          = "000000000000"
-owner               = "christophe"
-notification_emails = ["first.last@example.com"]
-budget_limit_usd    = 50
-image_tag           = "0.1.0"
-model_id            = "eu.anthropic.claude-sonnet-5"

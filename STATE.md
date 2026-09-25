@@ -6,38 +6,34 @@
 
 - Repository bootstrapped: package, tests (20, 90 % coverage), lint and types clean, CLI
   validated on live Hub datasets, Runtime entrypoint with a model-free `inspect` mode,
-  Dockerfile for `linux/arm64`, CI workflow, Terraform foundation layer (budget, ECR, Runtime)
-  validated offline.
-- AWS account chosen 2026-09-25 (D14): the existing standalone account. Its id lives only in
-  the gitignored `backend.hcl` and `terraform.tfvars`.
+  Dockerfile for `linux/arm64`, CI workflow.
 - Public repository created and pushed 2026-09-22:
   <https://github.com/christophe17/demosift> (personal account for now, D9).
+- AWS account chosen 2026-09-25 (D14): the author's existing standalone account. It now
+  matters to `demosift-web`, which deploys; nothing here holds its id.
+- Infrastructure moved out 2026-09-25 (D15): the Terraform that deployed the Runtime lives in
+  `demosift-web`. This repository ships the image and its contract (`docs/01` §5).
+- Code Interpreter question closed 2026-09-25 (D16): fixed audits are Lambdas.
 
 ## Next steps, in order
 
-Work resumes here. The account is chosen (D14); nothing else needs a decision before step 7,
-and each step can be done in one sitting.
+Work resumes here. Nothing needs a decision before step 5.
 
-1. **AWS account: decided** (D14, 2026-09-25), the existing standalone account already in the
-   CLI. Remaining in this step: create the Terraform state bucket, fill `backend.hcl` and
-   `terraform.tfvars` (`infra/README.md`). The CLI's default region is not the project's:
-   pass `--region eu-central-1` to every `aws` command, or use a dedicated profile.
-2. **Apply the foundation in two steps**: ECR first, push the `linux/arm64` runtime image,
-   then the full apply, because the Runtime needs an image to pull.
-3. **First invocation through AgentCore Runtime**, `inspect` mode then `agent` mode. Record
+1. **Container contract documented** — done 2026-09-25 (`docs/01` §5), with the execution
+   units (`docs/01` §4). Keep the table true: anything the image needs that is not in it is a
+   bug in the table.
+2. **Wait for the public instance's `runtime` layer** (`~/Sites/demosift-web/STATE.md`,
+   step 3). It builds this image from a checkout, pushes it and runs it on AgentCore Runtime.
+   Nothing to do here except `make docker-build` when asked.
+3. **First invocation through that Runtime**, `inspect` mode then `agent` mode. Record
    latency, tokens and cost per inspection in `JOURNAL.md` and update the table in
    `README.md`; these are the first numbers that do not come from a laptop.
 4. **Faithfulness test** of the narrative against the inspection JSON, on real model
    responses (`docs/02-milestones.md`, "How the audit proves itself").
-5. **Start building `demosift-web`** (D12, D13). The repository exists and is fully specified
-   at `~/Sites/demosift-web`; its own `STATE.md` orders its steps. It calls the Runtime
-   deployed at step 2; nothing of it lands in this repository.
-6. **Per-user quota and budget alarm** on a real address, then play the "costs tripled
-   overnight" runbook once (`docs/05-cost-and-security.md` §5).
-7. **Learning guide** for milestone 0 (`docs/guides/00-foundation.md`), written against what
+5. **Learning guide** for milestone 0 (`docs/guides/00-foundation.md`), written against what
    was actually deployed, not against what was planned.
 
-Milestone 0 closes when steps 1 to 7 are done and the numbers table carries its first cloud
+Milestone 0 closes when steps 1 to 5 are done and the numbers table carries its first cloud
 rows. Milestone 1 is then the numeric audit (`docs/02-milestones.md`).
 
 ## Numbers

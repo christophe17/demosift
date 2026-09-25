@@ -41,29 +41,6 @@ jobs:
           path: coverage.xml
           retention-days: 14
 
-  terraform:
-    name: terraform fmt, validate, tflint
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v5
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.15.8"
-      - name: fmt
-        run: terraform fmt -check -recursive -diff infra
-      - name: validate
-        run: |
-          for root in $(find infra/envs -mindepth 2 -maxdepth 2 -type d | sort); do
-            echo "== $root"
-            terraform -chdir="$root" init -backend=false -input=false >/dev/null
-            terraform -chdir="$root" validate
-          done
-      - uses: terraform-linters/setup-tflint@v5
-      - name: tflint
-        run: |
-          tflint --init --config "$GITHUB_WORKSPACE/.tflint.hcl"
-          cd infra && tflint --recursive --config "$GITHUB_WORKSPACE/.tflint.hcl"
-
   container:
     name: runtime image builds (linux/arm64)
     runs-on: ubuntu-24.04

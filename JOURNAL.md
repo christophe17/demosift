@@ -60,3 +60,12 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   organization; default region `eu-west-3`, hence the `--region` note in `STATE.md`; operator
   identity an IAM user with static keys, to keep with MFA and replace with Identity Center
   only if a second account appears. Nothing deployed yet.
+
+## 2026-09-25 — The infrastructure leaves; the container contract stays
+
+- D15: `infra/`, `.tflint.hcl`, the Terraform CI job and the `tf-*` Makefile targets moved to
+  `demosift-web`, which now deploys the Runtime from this repository's image. Nothing else
+  changed in the code; the image and its tests are untouched.
+- D16: the fixed audits are Lambdas; Code Interpreter only for improvised code.
+- `docs/01` gained §4 "Execution units" and §5 "The container contract"; `STATE.md` shrank to
+  the five steps that are this repository's.

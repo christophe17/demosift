@@ -9,12 +9,12 @@ Nothing reachable from the Internet calls Bedrock before the milestone-0 items e
 
 | Guardrail | Mechanism | Milestone |
 |---|---|---|
-| Monthly budget with alarms | AWS Budgets at 50 %, 80 %, 100 % of actual spend and 100 % of forecast (`infra/modules/budget`), emails to the owner | 0 |
+| Monthly budget with alarms | AWS Budgets at 50 %, 80 %, 100 % of actual spend and 100 % of forecast, emails to the owner; deployed by the public instance (`demosift-web`, its `infra/modules/budget`, D15) | 0 |
 | Model-free path | `inspect` mode answers without a model; the public front defaults to it and only runs `agent` mode for signed-in users | 0 |
 | Bounded generation | `max_tokens` on every model call; temperature 0; one tool, no code execution inside the agent container | 0 |
 | Caller authentication | The Runtime accepts IAM SigV4 only: the operator's CLI, and the public instance's worker role. End users never reach it directly; their sign-in is `demosift-web`'s (its `docs/04`) | 0 |
 | Per-user quota | Enforced by the public instance before it enqueues anything (`demosift-web`, its `docs/05`). This repository's own bound is the input cap below, so that even a trusted caller cannot make one audit unbounded | 1 |
-| Least privilege | The Runtime role can pull its image, write logs and traces, invoke the configured models, and nothing else (`infra/modules/runtime`) | 0 |
+| Least privilege | The Runtime role can pull its image, write logs and traces, invoke the configured models, and nothing else; the role is the public instance's (`demosift-web`, its `infra/modules/runtime`). This repository states what the container needs and no more (`docs/01` §5) | 0 |
 | No secrets in code | Hub tokens come from the user's OAuth grant (Identity) or from the environment locally; the CI scans for secrets | 0 |
 | Bounded inputs | Only `meta/` is downloaded at milestone 0; milestone 1 caps the number of episodes and files read per audit | 0 → 1 |
 | Write-back consent | Dataset-card edits only on the signed-in user's own datasets, shown as a diff before writing | 1 |

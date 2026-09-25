@@ -16,7 +16,7 @@ Interpreter in later milestones).
 - **Everything is in English**: code, comments, docs, commit messages, issues.
 - **The author learns by reading.** Claude Code writes the code and, for each milestone, the
   guide that explains it (`docs/`). A milestone without its guide and its numbers is not done.
-- **Bought conventions.** Quality rules, Terraform layout and CI shape are inherited from the
+- **Bought conventions.** Quality rules and CI shape are inherited from the
   author's earlier project (`cgp-ai`); the domain is new.
 
 ## 3. Reading order
@@ -26,7 +26,6 @@ Interpreter in later milestones).
 3. `docs/03-decisions.md` — decision log
 4. `docs/04-lerobot-dataset-format.md` — the v3.0 format as observed, and what each check verifies
 5. `docs/05-cost-and-security.md` — guardrails before exposure, cost model, threat sketch
-6. `infra/README.md` — Terraform layout and workflow
 
 **Session resume:** read `CLAUDE.md`, `STATE.md` (current milestone, numbers, pending
 decisions) and `JOURNAL.md` (dated history) before answering.
@@ -46,8 +45,9 @@ decisions) and `JOURNAL.md` (dated history) before answering.
    an issue, not a change.
 6. **Format honesty.** Only LeRobot codebase v3.0 is read; other versions are refused with an
    explicit error, never guessed at.
-7. **Infrastructure only through Terraform.** No resource created by hand in the console;
-   `apply` locally to `dev` only.
+7. **This repository deploys nothing.** It ships a container image and documents its contract
+   (`docs/01` §5); running it is the public instance's job (`demosift-web`, D15). No Terraform,
+   no cloud resource, no account id ever lands here.
 8. **Production quality from the first commit**: typed (`mypy --strict`), linted (`ruff`),
    tested (`pytest`, real recorded fixtures), no `TODO`, structured logs without tokens or
    personal data, explicit errors, timeouts and retries where a network is involved.
@@ -65,9 +65,9 @@ decisions) and `JOURNAL.md` (dated history) before answering.
 
 Python 3.12, `uv`, `src/` layout, single package `demosift`. `pydantic` models, `pandas` +
 `pyarrow` for parquet, `huggingface_hub` for the Hub, `strands-agents` for the agent,
-`bedrock-agentcore` SDK for the Runtime contract, `click` for the CLI. Terraform ≥ 1.15 with
-`hashicorp/aws` 6.x, region `eu-central-1`. Default model `eu.anthropic.claude-sonnet-5`
-(EU cross-region inference profile), configurable by environment variables.
+`bedrock-agentcore` SDK for the Runtime contract, `click` for the CLI. Default region
+`eu-central-1` and default model `eu.anthropic.claude-sonnet-5` (EU cross-region inference
+profile), both configurable by environment variables.
 
 ## 6. Conventions
 
@@ -75,6 +75,6 @@ Python 3.12, `uv`, `src/` layout, single package `demosift`. `pydantic` models, 
   not do yet.
 - Tests use the recorded metadata of a real dataset under `tests/fixtures/`; corruptions are
   made on copies in `tmp_path`, never on the fixture.
-- Conventional commits (`feat:`, `fix:`, `docs:`, `infra:`, `chore:`), one topic per PR.
+- Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`), one topic per PR.
 - Each milestone closes with: numbers in `README.md`, a `JOURNAL.md` entry, the learning
   guide in `docs/`, and the draft of the milestone's article (kept outside this repository).

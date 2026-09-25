@@ -95,7 +95,6 @@ later milestones, are in [docs/01-architecture.md](docs/01-architecture.md).
 src/demosift/        the package: format reader, Hub access, inspection, report, agent, runtime, CLI
 tests/               pytest suite on a real dataset's recorded metadata (tests/fixtures/)
 services/runtime/    Dockerfile of the AgentCore Runtime container (linux/arm64)
-infra/               Terraform: modules/ and envs/dev/foundation (budget, ECR, Runtime)
 docs/                architecture, milestones, decisions, dataset format, cost and security
 CLAUDE.md            working rules of the repository; STATE.md and JOURNAL.md track progress
 ```
@@ -107,13 +106,25 @@ make install     # uv sync
 make lint        # ruff check, ruff format --check, mypy --strict
 make test        # pytest with coverage
 make docker-build
-make tf-check    # terraform fmt, validate, tflint, trivy
+make docker-run  # the Runtime container on :8080
 ```
 
-## Deployment
+## Running the container
 
-Infrastructure is Terraform only; see [infra/README.md](infra/README.md). The runtime image
-is built for `linux/arm64`, which AgentCore Runtime requires.
+The repository ships one container image, built for `linux/arm64`, that serves the auditor
+as a service: `GET /ping` and `POST /invocations` on port 8080, the contract of AgentCore
+Runtime. Its full contract, what it listens on, its environment variables and what it needs
+at runtime, is in [docs/01-architecture.md](docs/01-architecture.md) §5. Run it anywhere that
+runs a `linux/arm64` image:
+
+```bash
+make docker-build && make docker-run
+curl -s -X POST localhost:8080/invocations -H 'content-type: application/json' \
+  -d '{"dataset_id": "lerobot/svla_so101_pickplace", "mode": "inspect"}'
+```
+
+This repository deploys nothing: no Terraform, no cloud resource. The public instance at
+`demosift.io` runs this image on AgentCore Runtime from a separate deployment repository.
 
 ## Contributing
 

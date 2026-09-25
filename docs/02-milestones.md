@@ -5,8 +5,8 @@ Work happens on one milestone at a time (`CLAUDE.md` §4.5); ideas outside it be
 
 | # | Milestone | Content | Status |
 |---|---|---|---|
-| 0 | **Foundation** | Terraform (budget, ECR, AgentCore Runtime), the level-0 inspection as CLI and as an agent, IAM-only access to the Runtime, budget alarm, observability, a first invocation measured; the faithfulness test of the agent's narrative. End-user sign-in and quotas are the public instance's (`demosift-web`, D12) | in progress |
-| 1 | **Numeric audit** | Frame-level checks on the parquet data: timestamp gaps, frozen frames, action and state ranges, jerk; run through Code Interpreter; Hub API as Gateway tools; the report written into the dataset card with the user's consent; security replayed on poisoned datasets before write-back goes live; first users. The public instance, `demosift-web` v1, ships together with this milestone | planned |
+| 0 | **Foundation** | The level-0 inspection as CLI and as an agent, the container image and its contract (`docs/01` §5), CI; then the first invocation measured on the public instance's Runtime once it is deployed, the faithfulness test of the agent's narrative, the learning guide. Terraform, IAM, budget and sign-in are the public instance's (`demosift-web`, D12, D15) | in progress |
+| 1 | **Numeric audit** | Frame-level checks on the parquet data: timestamp gaps, frozen frames, action and state ranges, jerk; as Lambda tools behind Gateway, deployed by the public instance (D16); Hub API as Gateway tools; the report written into the dataset card with the user's consent; security replayed on poisoned datasets before write-back goes live; first users. The public instance, `demosift-web` v1, ships together with this milestone | planned |
 | 2 | **Visual audit v0** | Uniformly sampled frames per episode sent to a vision model with a fixed rubric (occlusion, lighting, missing object, failed demonstration); everything through the strong model at this scale to produce labels; cost measured per frame; every published metric from N runs with intervals | planned |
 | 3 | **Gold set** | About two hundred episodes annotated by hand; the visual audit calibrated against them (precision, recall, Cohen's kappa per criterion); gold-set replay before any prompt or model change; Evaluations wired | planned |
 | 4 | **Modes, outliers, coverage** | Trajectory features, clustering of behaviour modes, ranked outliers, workspace coverage map with gaps | later |
@@ -44,7 +44,7 @@ needs to be trusted, each introduced at the milestone where it first matters.
 | It runs, without asking the author | A public URL, sign-in with Hugging Face, a dataset id in, a report out — delivered by `demosift-web` v1 on top of this repository's Runtime |
 | It is visible in the ecosystem | The report is written into the dataset card with a link back to the tool |
 | It is measured | The README table: datasets audited, episodes processed, latency and cost per audit, precision and recall of the visual audit on the gold set with intervals |
-| It is serious engineering | Terraform, CI, tests, Observability traces one can consult, a one-page architecture, a decisions log |
+| It is serious engineering | CI, tests, a one-page architecture and a decisions log here; Terraform and Observability traces one can consult in `demosift-web` |
 | It is safe to expose | Bedrock budget cap with alarm and bounded inputs here; per-user quota and anonymous rate limit in `demosift-web`; secrets out of the code; Apache-2.0 |
 | Someone else uses it | Audits launched by strangers, issues opened |
 

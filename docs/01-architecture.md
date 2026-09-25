@@ -57,9 +57,9 @@ table in `README.md`).
                          └───┬───────────────┬───────────────┬───────────────┬──────────┘
                              ▼               ▼               ▼               ▼
                       numeric audit    visual audit    coverage &      report writer
-                      (Code           (Claude vision   outliers        (dataset card,
-                      Interpreter     on sampled       (embeddings,    via Identity +
-                      on parquet)     frames; Nova     clusters,       Hub OAuth)
+                      (Lambda tool    (Claude vision   outliers        (dataset card,
+                      on parquet,     on sampled       (embeddings,    via Identity +
+                      via Gateway)    frames; Nova     clusters,       Hub OAuth)
                                       first in the     gaps map)
                                       cascade)
                              │               │               │               │
@@ -72,7 +72,7 @@ table in `README.md`).
 | Observability | Traces of every tool call and model call; the latency and token numbers | 0 |
 | Gateway | The Hugging Face Hub API (list files, read/write dataset cards) exposed as MCP tools with one credential | 1 |
 | Identity | Vaulting a user's outbound Hugging Face grant so the agent can read their private datasets and write their dataset card as them; end-user sign-in itself happens in the public instance (`demosift-web`, its D3) | 1 |
-| Code Interpreter | Running the numeric audit on parquet files in a sandbox instead of inside the agent container | 1 |
+| Code Interpreter | Running code the agent writes for a free-form question on a finished report ("plot joint 3 in episode 12"); never the fixed audits, which are Lambdas (D16) | later, with the conversation on a report |
 | Memory | Conversational context for the conversation on a finished report ("why did episode 7 fail?"), across turns and sessions. Not audit history and not thresholds: those are queryable records and live in the public instance's table | 2 |
 | Policy | Cedar rules on the Gateway: the write tool is callable only on the signed-in user's own datasets, and only after the consent step. This is the structural answer to an injection arriving through a task text or a dataset card (`docs/05-cost-and-security.md` §4) | 1 |
 | Evaluations | Judging the narrative against the deterministic inspection; the gold-set metrics | 3 |
@@ -80,14 +80,49 @@ table in `README.md`).
 **Browser is not used**: the Hub has a complete API, so driving a browser would be tool
 exposure, not a need. A service with no work to do is not wired in.
 
-**Open question on Code Interpreter (decide when milestone 1 opens).** The numeric audit is
-our own code: deterministic, tested, unchanging. Its natural home is a Lambda behind the
-Gateway, not a sandbox. Code Interpreter earns its place when the agent writes code that was
-not planned, which is the free-form user question ("show me the distribution of joint 3 in
-episode 12"). Milestone 1 decides on real usage: a Lambda for the fixed audit, Code
-Interpreter for ad-hoc analysis, or both.
+**Decided (D16, 2026-09-25): the fixed audits are Lambdas, Code Interpreter is for improvised
+code only.** The numeric and visual audits are our own code: deterministic, tested, unchanging.
+Deterministic code has nothing to do in a sandbox for improvised execution; it runs as
+functions behind the Gateway, deployed by the public instance. Code Interpreter earns its
+place only where the agent writes code that was not planned, the free-form question on a
+finished report, which arrives with that conversation.
 
-## 4. Data flow and storage
+## 4. Execution units
+
+One library, several thin entrypoints. "Multi-agent" does not mean multi-container: the
+Strands graph of the orchestrator, the audit agents and the writer lives in one process, and
+AgentCore isolates each user session in its own micro-VM and scales to zero between two.
+What must not live in that process is heavy work: from milestone 2 an audit downloads
+gigabytes of video, decodes frames and calls a vision model per episode, and doing that inside
+the agent's session ties batch compute to the process that converses.
+
+| Entrypoint | Does | Runs where | Deployed by |
+|---|---|---|---|
+| CLI | Everything, locally, without AWS | The user's laptop | Nobody, `pip install` |
+| Runtime container (§5) | The agent: orchestrate, call tools, narrate. Thin; it does not crunch | AgentCore Runtime | The public instance (`demosift-web`) |
+| Audit functions | The numeric audit, the visual audit of one episode: pure functions of this library | Lambda, exposed to the agent through Gateway and fed by the instance's queue | The public instance, as thin handlers over these functions (D16) |
+
+demosift ships the library, the image and the functions; the public instance decides how many
+deployables there are and wires them.
+
+## 5. The container contract
+
+What the public instance, or anyone else, relies on when running the image. Verified by
+running it locally (`JOURNAL.md`, 2026-09-21).
+
+| Item | Value |
+|---|---|
+| Image | Built by `services/runtime/Dockerfile`, `linux/arm64`, Python 3.12, non-root user (uid 10001), no persistent state |
+| Listens | `0.0.0.0:8080` |
+| `GET /ping` | Health: `{"status": "Healthy", ...}` |
+| `POST /invocations` | JSON in, JSON out, the request and response of §2: `dataset_id` and `mode` in; `passed`, `inspection`, `markdown`, `latency_seconds`, and in `agent` mode `narrative`, `usage`, `model_id` out |
+| Environment | `DEMOSIFT_MODEL_ID` (default `eu.anthropic.claude-sonnet-5`), `DEMOSIFT_REGION` (default `eu-central-1`), `DEMOSIFT_LOG_LEVEL`, `DEMOSIFT_HF_CACHE_DIR` (writable), `HF_TOKEN` optional for private datasets |
+| Needs at runtime | Network egress to `huggingface.co`; in `agent` mode, `bedrock:InvokeModel` and `bedrock:InvokeModelWithResponseStream` on the configured model or inference profile; nothing else. `inspect` mode calls no model and needs no AWS permission |
+| Logs | Structured lines on stdout; never a token, never a user's data |
+
+Anything the image needs that is not in this table is a bug in this table.
+
+## 6. Data flow and storage
 
 - **Inputs** stay on the Hub. Only `meta/` is downloaded at milestone 0; milestone 1
   downloads the `data/` chunks needed for the numeric audit; milestone 2 downloads video
