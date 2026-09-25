@@ -53,3 +53,10 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   open question on Code Interpreter versus a Lambda for the fixed numeric audit.
 - `STATE.md` reordered into numbered steps with the two decisions that block them.
 - No code changed; nothing deployed.
+
+## 2026-09-25 — Account chosen
+
+- D14: the existing standalone account. Checked from the CLI: not a member of any
+  organization; default region `eu-west-3`, hence the `--region` note in `STATE.md`; operator
+  identity an IAM user with static keys, to keep with MFA and replace with Identity Center
+  only if a second account appears. Nothing deployed yet.
