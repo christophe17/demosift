@@ -79,5 +79,6 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
 - Tag `v0.1.0` pushed on commit `abdc090`; the `release` workflow built the `linux/arm64` image
   under QEMU and published `ghcr.io/christophe17/demosift:v0.1.0` and `:sha-abdc090b8c14`
   in 121s (digest `sha256:01733a3eb6be93d561aec80b7eba05e8c8d6a3bc0463925ea78cfe606f11c3c6`). `ci` green on the same commit.
-- Package visibility at publication: {"message":"You need at least read:packages scope to get a package.","documentation_url":"https://docs.github.com/rest/packages/packages#get-a-package-for-a-user","status":"403"}unknown (token lacks read:packages). Making it public is the one manual step (D17);
+- Package visibility at publication: not readable from the laptop (the `gh` token lacks the
+  `read:packages` scope); GHCR packages are private by default. Making it public is the one manual step (D17);
   until then the deployment's promotion needs a token with `read:packages`.
