@@ -1,23 +1,20 @@
 [project]
 name = "demosift"
-version = "0.1.0"
-description = "A multi-agent auditor of LeRobot robot-demonstration datasets, on Amazon Bedrock AgentCore"
+version = "0.2.0"
+description = "Audit LeRobot robot-demonstration datasets before you train on them: a deterministic library and CLI"
 readme = "README.md"
 authors = [
     { name = "Christophe", email = "dufour.chri@gmail.com" }
 ]
 requires-python = ">=3.12,<3.13"
 license = "Apache-2.0"
-keywords = ["lerobot", "robotics", "dataset", "audit", "agents", "bedrock", "agentcore"]
+keywords = ["lerobot", "robotics", "dataset", "audit", "imitation-learning", "data-quality"]
 dependencies = [
-    "aws-opentelemetry-distro>=0.20",
-    "bedrock-agentcore>=0.1",
     "click>=8.2",
     "huggingface-hub>=0.35",
     "pandas>=2.3",
     "pyarrow>=21",
     "pydantic>=2.11",
-    "strands-agents>=1.0",
 ]
 
 [project.scripts]
@@ -59,7 +56,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "D", "PLR2004", "ANN", "ARG", "E501", "RUF001"]
-"src/demosift/cli.py" = ["T20", "PLC0415"]  # lazy imports keep `inspect` free of the agent stack
+"src/demosift/cli.py" = ["T20"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -76,7 +73,7 @@ show_error_codes = true
 files = ["src", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["strands", "strands.*", "bedrock_agentcore", "bedrock_agentcore.*", "huggingface_hub", "huggingface_hub.*"]
+module = ["huggingface_hub", "huggingface_hub.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

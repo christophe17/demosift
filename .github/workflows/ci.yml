@@ -42,7 +42,7 @@ jobs:
           retention-days: 14
 
   container:
-    name: runtime image builds (linux/arm64)
+    name: command-line image builds
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
@@ -51,8 +51,8 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: services/runtime/Dockerfile
-          platforms: linux/arm64
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max

@@ -2,14 +2,17 @@
 
 **Audit LeRobot datasets before you train on them.**
 
-demosift reads a robot-demonstration dataset from the Hugging Face Hub, checks it, and writes
-a quality report. It runs from a laptop as a command line, and as an agent on Amazon Bedrock
-AgentCore. Today it performs the **level-0 inspection**: format, robot, cameras, tasks,
-episode lengths and the consistency checks a broken upload fails. The next milestones add the
-numeric audit of frames, the visual audit of sampled frames, and a gold set that measures the
-audit itself. See [docs/02-milestones.md](docs/02-milestones.md).
+demosift reads a robot-demonstration dataset from the Hugging Face Hub, checks it, and writes a
+quality report. It is a **deterministic library and a command line**: no model, no agent, no
+cloud account. Every number in a report comes from code you can read and test. Today it
+performs the **level-0 inspection**: format, robot, cameras, tasks, episode lengths and the
+consistency checks a broken upload fails. The next milestones add the frame-level numeric audit,
+then the visual audit of sampled frames with its calibration. See
+[docs/02-milestones.md](docs/02-milestones.md).
 
-**Live instance:** not deployed yet (milestone 0 in progress).
+A hosted instance with a browser front end, sign-in and an assistant you can question about an
+audit is being built at `demosift.io` (not open yet). It runs this package; it lives in its own
+repository.
 
 ## Measured numbers
 
@@ -18,44 +21,49 @@ No number in this table is estimated: each comes from a recorded run in
 
 | Metric | Value | Recorded |
 |---|---|---|
-| Datasets audited on the public instance | not deployed yet | — |
 | CLI wall clock, metadata cached | 1.6 s, of which 0.04 s is the inspection itself (`lerobot/svla_so100_stacking`, 56 episodes) | 2026-09-21 |
 | CLI wall clock, metadata downloaded | 5.5 s, of which 2.1 s is the download of four files (same dataset, fresh cache) | 2026-09-21 |
-| Runtime container, `inspect` mode, metadata downloaded | 1.83 s (`lerobot/svla_so101_pickplace`, local Docker, arm64) | 2026-09-21 |
-| Runtime container, `inspect` mode, metadata cached | 0.14 s (same request repeated) | 2026-09-21 |
-| Runtime image size | 590 MB (linux/arm64) | 2026-09-21 |
-| Cost per inspection in `inspect` mode | 0 model tokens (deterministic) | 2026-09-21 |
-| Cost per inspection in `agent` mode | not measured yet (no Bedrock call made so far) | — |
-| Test suite | 20 tests, 90 % line coverage | 2026-09-21 |
+| Dependencies of a bare install | 40 packages in the lock file, none of them a cloud or agent SDK (was 139) | 2026-09-27 |
+| Command-line image | 524 MB, `linux/amd64` and `linux/arm64` | 2026-09-27 |
+| Test suite | 14 tests, 93 % line coverage | 2026-09-27 |
 
 ## Quick start
 
-Requires Python 3.12 and [uv](https://docs.astral.sh/uv/).
+Requires Python 3.12. Until the package is on PyPI, install from the release tag:
 
 ```bash
-uv sync
-uv run demosift inspect lerobot/svla_so101_pickplace          # Markdown report
-uv run demosift inspect --json lerobot/aloha_sim_insertion_human
-uv run demosift inspect ./path/to/a/local/dataset             # any directory with meta/
+pip install "demosift @ git+https://github.com/christophe17/demosift@v0.2.0"
+demosift inspect lerobot/svla_so101_pickplace          # Markdown report
+demosift inspect --json lerobot/aloha_sim_insertion_human
+demosift inspect ./path/to/a/local/dataset             # any directory with meta/
 ```
 
 The exit code is 0 when every check passes and 1 otherwise, so the command works in CI.
 Only `meta/` is downloaded (a few hundred kilobytes); set `HF_TOKEN` for private datasets.
 
-Agent mode asks a Bedrock model to narrate the inspection. It needs AWS credentials with
-Bedrock access in `eu-central-1` (override with `DEMOSIFT_MODEL_ID` and `DEMOSIFT_REGION`):
+Without Python, the same command line runs from the published image:
 
 ```bash
-uv run demosift agent lerobot/svla_so101_pickplace
+docker run --rm ghcr.io/christophe17/demosift:v0.2.0 inspect lerobot/svla_so101_pickplace
 ```
 
-The AgentCore Runtime server can run locally:
+## As a library
 
-```bash
-uv run demosift serve   # listens on :8080
-curl -s -X POST localhost:8080/invocations -H 'content-type: application/json' \
-  -d '{"dataset_id": "lerobot/svla_so101_pickplace", "mode": "inspect"}'
+Everything the command line does is a function call. The public surface is re-exported from
+the package root, so nothing deeper needs importing:
+
+```python
+from demosift import inspect_root, resolve_source, to_markdown
+
+root = resolve_source("lerobot/svla_so101_pickplace")   # downloads meta/ into the Hub cache
+inspection = inspect_root(root, "lerobot/svla_so101_pickplace")
+print(inspection.passed, [c.name for c in inspection.failed_checks])
+print(to_markdown(inspection))
 ```
+
+`Inspection` is a Pydantic model: `inspection.model_dump(mode="json")` is what a service stores
+or returns. The surface and its stability rules are in
+[docs/01-architecture.md](docs/01-architecture.md) §3.
 
 ## What the level-0 inspection reports
 
@@ -76,27 +84,21 @@ Only datasets in LeRobot codebase **v3.0** are read; older versions are refused 
 explicit error. The format as observed on real datasets is documented in
 [docs/04-lerobot-dataset-format.md](docs/04-lerobot-dataset-format.md).
 
-## Architecture
+## What this repository does not do
 
-```
-laptop ──── demosift CLI ───────────────┐
-                                        ▼
-AgentCore Runtime (container, :8080)  handle(payload)
-   └─ Strands agent on Bedrock ──▶ tool inspect_dataset ──▶ Hub meta/ ──▶ Inspection ──▶ Markdown/JSON
-```
-
-The core is deterministic: every number in a report comes from the inspection code, never
-from the model. The agent only narrates. Details, and the target multi-agent layout of the
-later milestones, are in [docs/01-architecture.md](docs/01-architecture.md).
+It calls no model, runs no agent, serves no HTTP, and deploys nothing. Those belong to the
+hosted instance, which imports this package and adds an assistant, a queue, a database and the
+infrastructure around them. Keeping them out is what makes the auditor testable to the last
+digit and usable by anyone, on any machine, without an account anywhere.
 
 ## Repository layout
 
 ```
-src/demosift/        the package: format reader, Hub access, inspection, report, agent, runtime, CLI
-tests/               pytest suite on a real dataset's recorded metadata (tests/fixtures/)
-services/runtime/    Dockerfile of the AgentCore Runtime container (linux/arm64)
-docs/                architecture, milestones, decisions, dataset format, cost and security
-CLAUDE.md            working rules of the repository; STATE.md and JOURNAL.md track progress
+src/demosift/   the package: format reader, Hub access, inspection, report, CLI
+tests/          pytest suite on a real dataset's recorded metadata (tests/fixtures/)
+Dockerfile      the command line in a box
+docs/           architecture, milestones, decisions, dataset format, bounds and robustness
+CLAUDE.md       working rules of the repository; STATE.md and JOURNAL.md track progress
 ```
 
 ## Development
@@ -105,33 +107,8 @@ CLAUDE.md            working rules of the repository; STATE.md and JOURNAL.md tr
 make install     # uv sync
 make lint        # ruff check, ruff format --check, mypy --strict
 make test        # pytest with coverage
-make docker-build
-make docker-run  # the Runtime container on :8080
+make docker-build && make docker-run DATASET=lerobot/svla_so101_pickplace
 ```
-
-## Running the container
-
-The repository ships one container image, built for `linux/arm64`, that serves the auditor
-as a service: `GET /ping` and `POST /invocations` on port 8080, the contract of AgentCore
-Runtime. Its full contract, what it listens on, its environment variables and what it needs
-at runtime, is in [docs/01-architecture.md](docs/01-architecture.md) §5. Run it anywhere that
-runs a `linux/arm64` image:
-
-```bash
-make docker-build && make docker-run
-curl -s -X POST localhost:8080/invocations -H 'content-type: application/json' \
-  -d '{"dataset_id": "lerobot/svla_so101_pickplace", "mode": "inspect"}'
-```
-
-Every version tag publishes the same image to GHCR, so there is nothing to build to run it:
-
-```bash
-docker run --rm -p 8080:8080 -e OTEL_SDK_DISABLED=true ghcr.io/christophe17/demosift:v0.1.0
-```
-
-This repository deploys nothing: no Terraform, no cloud resource. The public instance at
-`demosift.io` copies this image by digest and runs it on AgentCore Runtime from a separate
-deployment repository.
 
 ## Contributing
 

@@ -82,3 +82,20 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
 - Package visibility at publication: not readable from the laptop (the `gh` token lacks the
   `read:packages` scope); GHCR packages are private by default. Making it public is the one manual step (D17);
   until then the deployment's promotion needs a token with `read:packages`.
+
+## 2026-09-27 — The agent leaves; the library stands alone (D18)
+
+- Removed `agent.py`, `runtime.py`, their tests, `strands-agents`, `bedrock-agentcore` and
+  `aws-opentelemetry-distro`. Added `demosift/__init__.py` as the public surface and a test
+  that no cloud or agent module is ever imported by the package.
+- Lock file: 139 packages to 40; none of them a cloud or agent SDK. Tests: 14, 93 % line
+  coverage. `ruff` and `mypy --strict` clean.
+- The Dockerfile is now the command line in a box (`ENTRYPOINT demosift`): built for the native
+  architecture in 524 MB (was 590 MB); `inspect lerobot/aloha_sim_insertion_human` from the
+  image passes all checks. CI builds it for `linux/amd64` and `linux/arm64`.
+- `release` workflow rewritten: `uv build` and a GitHub release with the wheel and sdist
+  attached; a `pypi` job behind the `PYPI_PUBLISH` variable using trusted publishing; the image
+  to GHCR under the version and the short SHA.
+- `docs/05` renamed to `05-bounds-and-robustness.md`: the library has no cost to bound and no
+  secret to keep; what it has is hostile input.
+- Version bumped to `0.2.0` (the removal is a breaking change); not tagged yet.

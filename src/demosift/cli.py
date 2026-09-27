@@ -1,4 +1,4 @@
-"""Command-line interface: the same inspection, runnable from a laptop."""
+"""Command-line interface over the library."""
 
 from __future__ import annotations
 
@@ -28,22 +28,3 @@ def inspect(dataset: str, as_json: bool, cache_dir: str | None) -> None:
     inspection = inspect_root(root, dataset)
     click.echo(to_json(inspection) if as_json else to_markdown(inspection))
     sys.exit(0 if inspection.passed else 1)
-
-
-@main.command()
-@click.argument("dataset")
-def agent(dataset: str) -> None:
-    """Ask the Bedrock agent to inspect DATASET and narrate the result (needs AWS credentials)."""
-    from demosift.agent import run_inspection
-
-    narrative, usage = run_inspection(dataset)
-    click.echo(narrative)
-    click.echo(f"\n[tokens: {usage['input_tokens']} in, {usage['output_tokens']} out]", err=True)
-
-
-@main.command()
-def serve() -> None:
-    """Run the AgentCore Runtime HTTP server locally on port 8080."""
-    from demosift.runtime import main as serve_main
-
-    serve_main()
