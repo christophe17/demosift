@@ -13,6 +13,7 @@ measured.
 | Only `meta/` is downloaded | `snapshot_download` with allow-patterns; a dataset's videos and frame data are never fetched by the level-0 inspection | 0 |
 | Unsupported versions refused | `codebase_version` outside `v3.0` raises `UnsupportedFormatError` before anything else is read | 0 |
 | Consistency, not trust | Declared totals are checked against the episode table; a mismatch is a failed check, not an accepted claim | 0 |
+| Terminal output is inert | `to_text` replaces control characters in every string that comes from the dataset and caps column widths, so a task text or a dataset name cannot drive the terminal | 0 |
 | Metadata size cap | A `meta/` directory or episode table beyond a configurable size is refused with an error naming the size | 1 |
 | Selective, capped downloads | The numeric audit fetches the `data/` chunks an episode needs and caps episodes per audit and bytes per file | 1 |
 | Malformed parquet | A truncated or malformed file becomes a `Check` that failed with the parse error in `detail`, and the audit continues on the rest | 1 |
@@ -24,6 +25,7 @@ measured.
 |---|---|---|
 | A dataset with a million-row episode table | Downloaded and parsed | Refused by size before parsing |
 | A task text that reads like instructions | Quoted in the report as data; the library has no model to instruct | Unchanged; a judge or an assistant downstream treats it as data too, but that is their document |
+| A task text carrying terminal escape sequences | Replaced by `?` in the terminal rendering; quoted verbatim in Markdown and JSON, which are written to files and tools, not to a terminal | Unchanged |
 | Declared `total_frames` that does not match the data | `frame_total_matches` fails | Unchanged |
 | A truncated parquet file | An exception surfaces | A named failed check, audit continues |
 | A local path with `meta/` but no `info.json` | `FileNotFoundError` | An `UnsupportedFormatError` saying what is missing |

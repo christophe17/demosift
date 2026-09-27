@@ -25,7 +25,7 @@ No number in this table is estimated: each comes from a recorded run in
 | CLI wall clock, metadata downloaded | 5.5 s, of which 2.1 s is the download of four files (same dataset, fresh cache) | 2026-09-21 |
 | Dependencies of a bare install | 40 packages in the lock file, none of them a cloud or agent SDK (was 139) | 2026-09-27 |
 | Command-line image | 524 MB, `linux/amd64` and `linux/arm64` | 2026-09-27 |
-| Test suite | 14 tests, 93 % line coverage | 2026-09-27 |
+| Test suite | 22 tests, 95 % line coverage | 2026-09-27 |
 
 ## Quick start
 
@@ -33,11 +33,14 @@ Requires Python 3.12. Until the package is on PyPI, install from the release tag
 
 ```bash
 pip install "demosift @ git+https://github.com/christophe17/demosift@v0.2.0"
-demosift inspect lerobot/svla_so101_pickplace          # Markdown report
+demosift inspect lerobot/svla_so101_pickplace          # text on a terminal, Markdown when piped
+demosift inspect --format markdown lerobot/svla_so101_pickplace > report.md
 demosift inspect --json lerobot/aloha_sim_insertion_human
 demosift inspect ./path/to/a/local/dataset             # any directory with meta/
 ```
 
+On a terminal the report is coloured and fitted to the window; `NO_COLOR` turns the colour
+off and `--format` fixes the rendering (`text`, `markdown` or `json`) wherever the output goes.
 The exit code is 0 when every check passes and 1 otherwise, so the command works in CI.
 Only `meta/` is downloaded (a few hundred kilobytes); set `HF_TOKEN` for private datasets.
 
@@ -53,12 +56,13 @@ Everything the command line does is a function call. The public surface is re-ex
 the package root, so nothing deeper needs importing:
 
 ```python
-from demosift import inspect_root, resolve_source, to_markdown
+from demosift import inspect_root, resolve_source, to_markdown, to_text
 
 root = resolve_source("lerobot/svla_so101_pickplace")   # downloads meta/ into the Hub cache
 inspection = inspect_root(root, "lerobot/svla_so101_pickplace")
 print(inspection.passed, [c.name for c in inspection.failed_checks])
-print(to_markdown(inspection))
+print(to_markdown(inspection))                          # for a dataset card or a file
+print(to_text(inspection, width=80, color=True))        # for a terminal
 ```
 
 `Inspection` is a Pydantic model: `inspection.model_dump(mode="json")` is what a service stores

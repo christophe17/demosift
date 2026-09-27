@@ -10,7 +10,7 @@ from importlib.metadata import version
 from demosift.format import DatasetMeta, UnsupportedFormatError, load_meta
 from demosift.hub import fetch_meta, resolve_source
 from demosift.inspection import Check, Inspection, inspect_meta, inspect_root
-from demosift.report import to_json, to_markdown
+from demosift.report import to_json, to_markdown, to_text
 
 __version__ = version("demosift")
 
@@ -27,4 +27,5 @@ __all__ = [
     "resolve_source",
     "to_json",
     "to_markdown",
+    "to_text",
 ]

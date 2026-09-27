@@ -99,3 +99,19 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
 - `docs/05` renamed to `05-bounds-and-robustness.md`: the library has no cost to bound and no
   secret to keep; what it has is hostile input.
 - Version bumped to `0.2.0` (the removal is a breaking change); not tagged yet.
+
+## 2026-09-27 — Terminal rendering (D19)
+
+- `to_text` added to `report.py` and to the public surface: verdict first, failed checks under
+  it, aligned columns, the last column wrapped to the width, colour through `click.style`,
+  control characters from the dataset replaced (`docs/05`). Markdown and JSON unchanged.
+- CLI: `--format text|markdown|json`; the default is text on a terminal and Markdown when
+  piped, `--json` kept as an alias, `NO_COLOR` honoured, the width read from the terminal and
+  capped at 160 columns.
+- Rich tried on the existing Markdown and not adopted (D19): four more packages for an output
+  that centred the title, padded every line and truncated the check names.
+- Numbers: `report.py` 103 → 317 lines, `cli.py` 30 → 62; tests 14 → 22, line coverage
+  93 % → 95 %; `ruff` and `mypy --strict` clean. Live on `lerobot/svla_so101_pickplace`: Markdown
+  when piped, bold and green text on a pseudo-terminal, exit code 0. The image rebuilt at
+  524 MB (unchanged): Markdown without `-t`, coloured text with it.
+- Version stays `0.2.0`, still untagged: the addition ships in the tag.

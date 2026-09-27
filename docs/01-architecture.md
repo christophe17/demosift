@@ -29,9 +29,9 @@ of that changes a single number, which is why none of it is here.
 | `demosift.format` | Parse `meta/` of a v3.0 dataset into typed objects; refuse other versions | pandas, pyarrow, pydantic |
 | `demosift.hub` | Download only `meta/` (`snapshot_download` with patterns); accept a local directory | huggingface_hub |
 | `demosift.inspection` | Facts (cameras, tasks, lengths) and consistency checks; robust outliers on length | format |
-| `demosift.report` | Markdown card and JSON | inspection |
+| `demosift.report` | Markdown card, plain text for a terminal, JSON | inspection, click |
 | `demosift.config` | The two environment variables the library reads: cache directory, log level | |
-| `demosift.cli` | `inspect`, over the same functions | click, everything above |
+| `demosift.cli` | `inspect` with `--format` (text, markdown, json), over the same functions | click, everything above |
 
 ## 3. The public surface
 
@@ -44,7 +44,7 @@ of that changes a single number, which is why none of it is here.
 | `load_meta(root) -> DatasetMeta` | Parsed `meta/` |
 | `inspect_root(root, dataset_id=None) -> Inspection`, `inspect_meta(meta, dataset_id)` | The level-0 inspection |
 | `Inspection`, `Check`, `DatasetMeta`, `UnsupportedFormatError` | The types a caller stores, branches on, or catches |
-| `to_markdown(inspection) -> str`, `to_json(inspection) -> str` | Renderings |
+| `to_markdown(inspection) -> str`, `to_text(inspection, *, width=100, color=False) -> str`, `to_json(inspection) -> str` | Renderings: a dataset card or a file, a terminal, a tool |
 | `__version__` | |
 
 `Inspection` is a Pydantic model; `model_dump(mode="json")` is the storable form. This surface

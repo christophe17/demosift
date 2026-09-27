@@ -15,6 +15,8 @@
   `demosift/__init__.py`; 40 packages in the lock file, 14 tests, 93 % coverage. The
   `release` workflow now publishes a wheel and a GitHub release, PyPI when trusted publishing
   is configured, and the command-line image on GHCR.
+- **D19, 2026-09-27: terminal rendering.** `to_text` on the public surface and `--format` on the
+  CLI (text on a terminal, Markdown when piped); 22 tests, 95 % coverage. Ships in `v0.2.0`.
 
 ## Next steps, in order
 

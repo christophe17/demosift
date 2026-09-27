@@ -9,6 +9,7 @@ def test_public_surface_is_importable_from_the_package_root(so101_root: Path) ->
     assert inspection.passed
     assert demosift.to_markdown(inspection).startswith("# Inspection of")
     assert '"total_frames": 11939' in demosift.to_json(inspection)
+    assert demosift.to_text(inspection).splitlines()[0].endswith("✔ all checks passed")
     assert demosift.__version__
 
 
