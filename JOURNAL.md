@@ -128,3 +128,12 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   block of `README.md` and rejected the aligned trailing comments. The three lines reformatted
   as ruff wants them; 22 files formatted, 22 tests green. The Markdown code blocks in `docs/`
   were unaffected.
+
+## 2026-09-30 — `ci` red on the bump: the lock had not followed the version
+
+- The `0.3.0` bump of `pyproject.toml` was pushed without `uv lock`, so `uv.lock` still
+  recorded `demosift 0.2.0` and every `--locked` step refused it: the export for the
+  vulnerability scan, `uv sync` in the tests job, and the image build. Relocked: one line
+  changes, the project's own version. Lint, types and the tests green on the laptop before
+  the push. A bump is two files, `pyproject.toml` and `uv.lock`; `uv lock --check` is the
+  one-second test that would have caught it.
