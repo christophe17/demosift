@@ -1,7 +1,7 @@
 # STATE
 
-**Current milestone: 0 — Foundation.** Started 2026-09-21. `v0.2.0` released 2026-09-27;
-`v0.3.0` ready to tag.
+**Current milestone: 0 — Foundation.** Started 2026-09-21. `v0.2.0` released 2026-09-27,
+`v0.3.0` released 2026-09-30.
 
 ## Done
 
@@ -23,21 +23,23 @@
   the CLI image on GHCR, PyPI skipped (`PYPI_PUBLISH` unset). `ci` on that commit was red:
   `ruff format --check` now formats the README's Python block and rejected its aligned
   comments; reformatted 2026-09-28, 22 tests green, version bumped to `0.3.0`.
+- **`v0.3.0` released 2026-09-30** on `f6b3600`, D19 included: wheel (16,764 bytes) and sdist
+  (13,978 bytes) on the GitHub release, the CLI image on GHCR, PyPI skipped (`PYPI_PUBLISH`
+  unset); `release` ran in 55 s. The bump's first push turned `ci` red because `uv.lock` had
+  not followed the version; relocked the same day (`JOURNAL.md`).
 
 ## Next steps, in order
 
-1. **Push the README reformat and the `0.3.0` bump (committed 2026-09-30), `ci` green on
-   `main`; then tag `v0.3.0`** and push the tag; watch the `release` workflow (wheel, GitHub release, image).
-   The hosted instance stays pinned to `v0.2.0` until it needs `to_text`.
-2. **PyPI, once** *(author, optional now)*: create the project on PyPI with trusted publishing
+1. **PyPI, once** *(author, optional now)*: create the project on PyPI with trusted publishing
    for this repository and the `pypi` environment, then set the repository variable
    `PYPI_PUBLISH=true`; the next tag publishes. Until then the install line uses the git tag.
-3. **Learning guide** for milestone 0 (`docs/guides/00-foundation.md`): the format, the
+2. **Learning guide** for milestone 0 (`docs/guides/00-foundation.md`): the format, the
    checks, the public surface, the release pipeline, written against what exists.
-4. **Milestone 1 opens**: the numeric audit (`docs/02`), starting with the bounds of `docs/05`
+3. **Milestone 1 opens**: the numeric audit (`docs/02`), starting with the bounds of `docs/05`
    §1 so that the first frame-level reader is born bounded.
 
-Milestone 0 closes when steps 1 and 3 are done.
+Milestone 0 closes when step 2 is done; the hosted instance stays pinned to `v0.2.0` until it
+needs `to_text`.
 
 ## Numbers
 

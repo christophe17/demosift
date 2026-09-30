@@ -137,3 +137,13 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   changes, the project's own version. Lint, types and the tests green on the laptop before
   the push. A bump is two files, `pyproject.toml` and `uv.lock`; `uv lock --check` is the
   one-second test that would have caught it.
+
+## 2026-09-30 — `v0.3.0` released
+
+- Tagged on `f6b3600` once `ci` was green on `main` (run 36735233939: lint, types and tests in
+  25 s, the image build in 2 min 19 s, the vulnerability scan and the secret scan green).
+  `release` run 36735633672 green in 55 s: the wheel (16,764 bytes) and the sdist (13,978
+  bytes) on the GitHub release, published 15:18:04 UTC; the command-line image on GHCR; PyPI
+  skipped, `PYPI_PUBLISH` unset. D19 (`to_text`, `--format`) is released for the first time;
+  the README's install lines already pointed at `v0.3.0`. Milestone 0's release step closed;
+  the learning guide is what remains of the milestone.
