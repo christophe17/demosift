@@ -32,7 +32,7 @@ No number in this table is estimated: each comes from a recorded run in
 Requires Python 3.12. Until the package is on PyPI, install from the release tag:
 
 ```bash
-pip install "demosift @ git+https://github.com/christophe17/demosift@v0.2.0"
+pip install "demosift @ git+https://github.com/christophe17/demosift@v0.3.0"
 demosift inspect lerobot/svla_so101_pickplace          # text on a terminal, Markdown when piped
 demosift inspect --format markdown lerobot/svla_so101_pickplace > report.md
 demosift inspect --json lerobot/aloha_sim_insertion_human
@@ -47,7 +47,7 @@ Only `meta/` is downloaded (a few hundred kilobytes); set `HF_TOKEN` for private
 Without Python, the same command line runs from the published image:
 
 ```bash
-docker run --rm ghcr.io/christophe17/demosift:v0.2.0 inspect lerobot/svla_so101_pickplace
+docker run --rm ghcr.io/christophe17/demosift:v0.3.0 inspect lerobot/svla_so101_pickplace
 ```
 
 ## As a library
@@ -58,11 +58,11 @@ the package root, so nothing deeper needs importing:
 ```python
 from demosift import inspect_root, resolve_source, to_markdown, to_text
 
-root = resolve_source("lerobot/svla_so101_pickplace")   # downloads meta/ into the Hub cache
+root = resolve_source("lerobot/svla_so101_pickplace")  # downloads meta/ into the Hub cache
 inspection = inspect_root(root, "lerobot/svla_so101_pickplace")
 print(inspection.passed, [c.name for c in inspection.failed_checks])
-print(to_markdown(inspection))                          # for a dataset card or a file
-print(to_text(inspection, width=80, color=True))        # for a terminal
+print(to_markdown(inspection))  # for a dataset card or a file
+print(to_text(inspection, width=80, color=True))  # for a terminal
 ```
 
 `Inspection` is a Pydantic model: `inspection.model_dump(mode="json")` is what a service stores

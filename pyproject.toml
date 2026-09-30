@@ -1,6 +1,6 @@
 [project]
 name = "demosift"
-version = "0.2.0"
+version = "0.3.0"
 description = "Audit LeRobot robot-demonstration datasets before you train on them: a deterministic library and CLI"
 readme = "README.md"
 authors = [

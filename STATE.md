@@ -1,6 +1,7 @@
 # STATE
 
-**Current milestone: 0 — Foundation.** Started 2026-09-21. `v0.2.0` ready to tag.
+**Current milestone: 0 — Foundation.** Started 2026-09-21. `v0.2.0` released 2026-09-27;
+`v0.3.0` ready to tag.
 
 ## Done
 
@@ -16,12 +17,18 @@
   `release` workflow now publishes a wheel and a GitHub release, PyPI when trusted publishing
   is configured, and the command-line image on GHCR.
 - **D19, 2026-09-27: terminal rendering.** `to_text` on the public surface and `--format` on the
-  CLI (text on a terminal, Markdown when piped); 22 tests, 95 % coverage. Ships in `v0.2.0`.
+  CLI (text on a terminal, Markdown when piped); 22 tests, 95 % coverage. Committed 41 minutes
+  after the `v0.2.0` tag, so it is not in that release; it ships in `v0.3.0`.
+- **`v0.2.0` released 2026-09-27** on the D18 commit: wheel and sdist on the GitHub release,
+  the CLI image on GHCR, PyPI skipped (`PYPI_PUBLISH` unset). `ci` on that commit was red:
+  `ruff format --check` now formats the README's Python block and rejected its aligned
+  comments; reformatted 2026-09-28, 22 tests green, version bumped to `0.3.0`.
 
 ## Next steps, in order
 
-1. **Tag `v0.2.0`** and push the tag; watch the `release` workflow (wheel, GitHub release,
-   image). The hosted instance pins this tag.
+1. **Push the README reformat and the `0.3.0` bump (committed 2026-09-30), `ci` green on
+   `main`; then tag `v0.3.0`** and push the tag; watch the `release` workflow (wheel, GitHub release, image).
+   The hosted instance stays pinned to `v0.2.0` until it needs `to_text`.
 2. **PyPI, once** *(author, optional now)*: create the project on PyPI with trusted publishing
    for this repository and the `pypi` environment, then set the repository variable
    `PYPI_PUBLISH=true`; the next tag publishes. Until then the install line uses the git tag.

@@ -115,3 +115,16 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   when piped, bold and green text on a pseudo-terminal, exit code 0. The image rebuilt at
   524 MB (unchanged): Markdown without `-t`, coloured text with it.
 - Version stays `0.2.0`, still untagged: the addition ships in the tag.
+
+## 2026-09-28 — The tag preceded D19; `ci` red on `main`
+
+- `v0.2.0` was tagged and pushed on the D18 commit (`4c9d410`) at 11:19 on 2026-09-27; the
+  `release` workflow published the wheel, the sdist and the CLI image, and skipped PyPI. D19 was
+  committed at 12:00 the same day with the words "still untagged", which was wrong: the release
+  holds D18 only, `to_text` and `--format` are unreleased. They ship in `v0.3.0`; the version is
+  bumped, the README's install lines follow, the tag is the next step. Moving a published tag was
+  not considered: the hosted instance's lock file records the commit `v0.2.0` resolved to.
+- `ci` on the tagged commit failed at `ruff format --check`: the pinned ruff formats the Python
+  block of `README.md` and rejected the aligned trailing comments. The three lines reformatted
+  as ruff wants them; 22 files formatted, 22 tests green. The Markdown code blocks in `docs/`
+  were unaffected.
