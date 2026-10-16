@@ -154,5 +154,5 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   they say what a product would add and where (`CLAUDE.md` §2, `README.md`, `STATE.md`,
   `docs/01` §5, `docs/02` definition of done, `docs/03` D12, D13, D15, D16, D18, the earlier
   entries of this file). The author's production project is `~/Project/sherpapier`, unrelated
-  to this library (program board, `~/Roadmaps/roadmap-robotics/docs/09`). The library is
+  to this library (program board, `~/Roadmaps/program/docs/08`). The library is
   unchanged; nothing measured.
