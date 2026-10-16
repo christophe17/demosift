@@ -10,10 +10,6 @@ consistency checks a broken upload fails. The next milestones add the frame-leve
 then the visual audit of sampled frames with its calibration. See
 [docs/02-milestones.md](docs/02-milestones.md).
 
-A hosted instance with a browser front end, sign-in and an assistant you can question about an
-audit is being built at `demosift.io` (not open yet). It runs this package; it lives in its own
-repository.
-
 ## Measured numbers
 
 No number in this table is estimated: each comes from a recorded run in
@@ -90,9 +86,9 @@ explicit error. The format as observed on real datasets is documented in
 
 ## What this repository does not do
 
-It calls no model, runs no agent, serves no HTTP, and deploys nothing. Those belong to the
-hosted instance, which imports this package and adds an assistant, a queue, a database and the
-infrastructure around them. Keeping them out is what makes the auditor testable to the last
+It calls no model, runs no agent, serves no HTTP, and deploys nothing. Those belong to a
+product built over it, which imports this package and adds its own assistant, queue, database
+and infrastructure. Keeping them out is what makes the auditor testable to the last
 digit and usable by anyone, on any machine, without an account anywhere.
 
 ## Repository layout

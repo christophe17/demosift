@@ -43,7 +43,7 @@ needs to be trusted, each introduced at the milestone where it first matters.
 | It is measured | The README table: latencies, dependency count, test coverage; from milestone 2, the judge's precision and recall on the gold set with intervals |
 | It is serious engineering | CI, tests on real recorded data, a one-page architecture, a decisions log, a versioned public surface |
 | It is safe to point at anything | Bounded downloads, explicit errors on hostile input, no credential but the caller's Hub token |
-| Someone else uses it | Installs from the release, issues opened, the hosted instance runs it |
+| Someone else uses it | Installs from the release, issues opened |
 
 ## Excluded from the first pass
 

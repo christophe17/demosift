@@ -40,14 +40,13 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   in the root and the two modules, so 1.15.0 is refused with an explicit message instead of a
   confusing validate error.
 
-## 2026-09-23 — The public instance becomes its own repository
+## 2026-09-23 — The service boundary drawn (D12, D13)
 
-- Decided D12 and D13: the web service is a separate repository, `demosift-web`, created and
-  specified the same day at `~/Sites/demosift-web`; the product name stays `demosift` on both
-  sides; `demosift.io` is canonical. This repository keeps the library, the CLI, the agent,
-  the Runtime container and the Terraform that deploys that Runtime.
+- Decided D12 and D13: a web service over the library, if one is built, is its own repository;
+  the product name stays `demosift` for users. This repository keeps the library, the CLI, the
+  agent, the Runtime container and the Terraform that deploys that Runtime.
 - Consequences propagated: the Runtime is IAM-only and never sees an end-user token; sign-in,
-  quota, history and the anonymous tier are the public instance's; Identity here means the
+  quota, history and the anonymous tier are a service's; Identity here means the
   outbound grant vault, Memory means conversational context, not records.
 - `docs/01` gained Policy in the AgentCore table, the explicit exclusion of Browser, and the
   open question on Code Interpreter versus a Lambda for the fixed numeric audit.
@@ -63,9 +62,9 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
 
 ## 2026-09-25 — The infrastructure leaves; the container contract stays
 
-- D15: `infra/`, `.tflint.hcl`, the Terraform CI job and the `tf-*` Makefile targets moved to
-  `demosift-web`, which now deploys the Runtime from this repository's image. Nothing else
-  changed in the code; the image and its tests are untouched.
+- D15: `infra/`, `.tflint.hcl`, the Terraform CI job and the `tf-*` Makefile targets left this
+  repository; a deployment runs the Runtime from this repository's image. Nothing else changed
+  in the code; the image and its tests are untouched.
 - D16: the fixed audits are Lambdas; Code Interpreter only for improvised code.
 - `docs/01` gained §4 "Execution units" and §5 "The container contract"; `STATE.md` shrank to
   the five steps that are this repository's.
@@ -123,7 +122,7 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   committed at 12:00 the same day with the words "still untagged", which was wrong: the release
   holds D18 only, `to_text` and `--format` are unreleased. They ship in `v0.3.0`; the version is
   bumped, the README's install lines follow, the tag is the next step. Moving a published tag was
-  not considered: the hosted instance's lock file records the commit `v0.2.0` resolved to.
+  not considered: a downstream lock file records the commit `v0.2.0` resolved to.
 - `ci` on the tagged commit failed at `ruff format --check`: the pinned ruff formats the Python
   block of `README.md` and rejected the aligned trailing comments. The three lines reformatted
   as ruff wants them; 22 files formatted, 22 tests green. The Markdown code blocks in `docs/`
@@ -147,3 +146,13 @@ Dated history. Every number quoted elsewhere in the repository points to an entr
   skipped, `PYPI_PUBLISH` unset. D19 (`to_text`, `--format`) is released for the first time;
   the README's install lines already pointed at `v0.3.0`. Milestone 0's release step closed;
   the learning guide is what remains of the milestone.
+
+## 2026-10-16 — The library stands alone in its documents
+
+- At the author's request, from a session in `~/Roadmaps/roadmap-research-engineer`: the
+  documents of this repository no longer describe any particular product over the library;
+  they say what a product would add and where (`CLAUDE.md` §2, `README.md`, `STATE.md`,
+  `docs/01` §5, `docs/02` definition of done, `docs/03` D12, D13, D15, D16, D18, the earlier
+  entries of this file). The author's production project is `~/Project/sherpapier`, unrelated
+  to this library (program board, `~/Roadmaps/roadmap-robotics/docs/09`). The library is
+  unchanged; nothing measured.

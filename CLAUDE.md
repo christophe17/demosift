@@ -12,10 +12,10 @@ model, no agent and no cloud account involved.
 
 - **Public repository, real users.** The users are the LeRobot community; the tool must be
   useful to them for free, and honest about what it can and cannot see.
-- **A library first.** A hosted instance imports this package and builds an assistant, a
-  pipeline and a front end around it, in a separate repository. Anything that only exists
-  because there is a hosted instance with users (a model call, an agent, sign-in, quotas,
-  infrastructure) does not belong here.
+- **A library first.** A product built over this package imports a pinned release and adds
+  its own assistant, pipeline and front end, in its own repository. Anything that only exists
+  because there are users to serve (a model call, an agent, sign-in, quotas, infrastructure)
+  does not belong here.
 - **Everything is in English**: code, comments, docs, commit messages, issues.
 - **The author learns by reading.** Claude Code writes the code and, for each milestone, the
   guide that explains it (`docs/`). A milestone without its guide and its numbers is not done.

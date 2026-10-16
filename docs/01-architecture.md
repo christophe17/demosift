@@ -80,9 +80,6 @@ no implementation behind it is speculation.
 - **Bring your own model** for the visual audit, behind the protocol of §4, and publish its
   calibration before publishing its verdicts.
 
-The hosted instance at `demosift.io` does exactly this; its architecture is its own document
-in its own repository.
-
 ## 6. Data flow
 
 Only `meta/` is downloaded today, into the Hub cache (`DEMOSIFT_HF_CACHE_DIR`, or

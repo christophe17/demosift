@@ -38,8 +38,7 @@
 3. **Milestone 1 opens**: the numeric audit (`docs/02`), starting with the bounds of `docs/05`
    §1 so that the first frame-level reader is born bounded.
 
-Milestone 0 closes when step 2 is done; the hosted instance stays pinned to `v0.2.0` until it
-needs `to_text`.
+Milestone 0 closes when step 2 is done.
 
 ## Numbers
 
